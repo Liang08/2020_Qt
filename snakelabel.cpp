@@ -10,12 +10,12 @@ void SnakeLabel::mousePressEvent(QMouseEvent *event){
     int i = event->x() / 25;
     int j = event->y() / 25 - 2;
     if(i < 40 && j < 40)
-        addToObstical(i, j);
+        addToObstacle(i, j);
     emit freshen();
 }
 
-void SnakeLabel::addToObstical(int i, int j){
-    ob.addObstical(i, j);
+void SnakeLabel::addToObstacle(int i, int j){
+    ob.addObstacle(i, j);
 }
 
 
@@ -35,4 +35,8 @@ void SnakeLabel::setSnakeTail(int x, int y){
     else
         snake_0.data[1] = Position(x, y);
     emit freshen();
+}
+
+bool SnakeLabel::touchObstacle(int i){
+    return ob.obs[snake_0.data[i].x][snake_0.data[i].y] == 1;
 }

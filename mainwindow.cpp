@@ -185,6 +185,10 @@ void MainWindow::createSnake(int){
         ui->label->setSnakeTail(x[0]+1, x[1]);
         break;
     }
+    if (ui->label->touchObstacle(0) || ui->label->touchObstacle(1))
+        but[0]->setEnabled(false);
+    else
+        but[0]->setEnabled(true);
 }
 
 

@@ -11,10 +11,11 @@ class SnakeLabel : public QLabel
     Q_OBJECT
 public:
     explicit SnakeLabel(QWidget *parent = nullptr);
-    void addToObstical(int i, int j);
+    void addToObstacle(int i, int j);
     void addSnake(int x, int y);
     void setSnake(int x, int y);
     void setSnakeTail(int x, int y);
+    bool touchObstacle(int i);
     snakeData snake_0;
     Obstacle ob;
 
