@@ -1,11 +1,15 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "snakedata.h"
+#include <QPixmap>
+#include <QPainter>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    paintBackground();
     but[0] = ui->startButton;
     but[1] = ui->stopButton;
     but[2] = ui->continueButton;
@@ -82,3 +86,29 @@ void MainWindow::restart(){
 void MainWindow::load(){
     setButtonStatus(1);
 }
+
+void MainWindow::paintBackground(){
+    QPixmap pixmap = QPixmap(1001, 1001);
+    pixmap.fill(Qt::white);
+    QPainter painter(&pixmap);
+    QPen pen;
+    pen.setColor(Qt::black);
+    painter.setPen(pen);
+    for(int i = 0; i < 40; i ++){
+        for(int j = 0; j < 40; j ++){
+            painter.drawRect(25 * i, 25 * j, 25 * i + 25, 25 * j + 25);
+        }
+    }
+    QBrush brush;
+    brush.setColor(Qt::blue);
+    painter.setBrush(brush);
+    for(int i = 0; i < 40; i ++){
+        for(int j = 0; j < 40; j ++){
+            if(ui->label->ob.obs[i][j] == 1)
+            painter.drawRect(25 * i, 25 * j, 25 * i + 25, 25 * j + 25);
+        }
+    }
+    ui->label->setPixmap(pixmap);
+}
+
+
