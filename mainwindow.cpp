@@ -14,17 +14,16 @@ MainWindow::MainWindow(QWidget *parent)
     but[5] = ui->saveButton;
     but[6] = ui->loadButton;
     setButtonStatus(0);
+    connect(but[0], SIGNAL(clicked()), this, SLOT(start()));
     connect(but[1], SIGNAL(clicked()), this, SLOT(stop()));
+    connect(but[2], SIGNAL(clicked()), this, SLOT(contin()));
+    connect(but[3], SIGNAL(clicked()), this, SLOT(restart()));
+    connect(but[6], SIGNAL(clicked()), this, SLOT(load()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-
-void MainWindow::stop(){
-    setButtonStatus(2);
 }
 
 void MainWindow::setButtonStatus(int i){
@@ -62,4 +61,24 @@ void MainWindow::setButtonStatus(int i){
         but[6]->setEnabled(false);
         break;
     }
+}
+
+void MainWindow::stop(){
+    setButtonStatus(2);
+}
+
+void MainWindow::start(){
+    setButtonStatus(1);
+}
+
+void MainWindow::contin(){
+    setButtonStatus(1);
+}
+
+void MainWindow::restart(){
+    setButtonStatus(0);
+}
+
+void MainWindow::load(){
+    setButtonStatus(1);
 }

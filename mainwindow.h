@@ -18,6 +18,10 @@ public:
 
 private slots:
     void stop();
+    void start();
+    void contin();
+    void restart();
+    void load();
 
 private:
     Ui::MainWindow *ui;
