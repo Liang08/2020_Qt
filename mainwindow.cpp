@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(but[2], SIGNAL(clicked()), this, SLOT(contin()));
     connect(but[3], SIGNAL(clicked()), this, SLOT(restart()));
     connect(but[6], SIGNAL(clicked()), this, SLOT(load()));
+    connect(ui->label, SIGNAL(labelClick()), this, SLOT(obstaclePaint()));
 }
 
 MainWindow::~MainWindow()
@@ -87,6 +88,10 @@ void MainWindow::load(){
     setButtonStatus(1);
 }
 
+void MainWindow::obstaclePaint(){
+    paintBackground();
+}
+
 void MainWindow::paintBackground(){
     QPixmap pixmap = QPixmap(1001, 1001);
     pixmap.fill(Qt::white);
@@ -101,11 +106,12 @@ void MainWindow::paintBackground(){
     }
     QBrush brush;
     brush.setColor(Qt::blue);
+    brush.setStyle(Qt::Dense1Pattern);
     painter.setBrush(brush);
     for(int i = 0; i < 40; i ++){
         for(int j = 0; j < 40; j ++){
             if(ui->label->ob.obs[i][j] == 1)
-            painter.drawRect(25 * i, 25 * j, 25 * i + 25, 25 * j + 25);
+                painter.drawRect(25 * i, 25 * j, 25, 25);
         }
     }
     ui->label->setPixmap(pixmap);

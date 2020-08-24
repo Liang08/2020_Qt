@@ -25,6 +25,7 @@ private slots:
     void contin();
     void restart();
     void load();
+    void obstaclePaint();
 
 private:
     Ui::MainWindow *ui;

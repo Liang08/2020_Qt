@@ -22,6 +22,7 @@ private:
 
 
 signals:
+    void labelClick();
 
 public slots:
 };
