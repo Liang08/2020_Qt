@@ -12,6 +12,9 @@ class SnakeLabel : public QLabel
 public:
     explicit SnakeLabel(QWidget *parent = nullptr);
     void addToObstical(int i, int j);
+    void addSnake(int x, int y);
+    void setSnake(int x, int y);
+    void setSnakeTail(int x, int y);
     snakeData snake_0;
     Obstacle ob;
 
@@ -22,7 +25,8 @@ private:
 
 
 signals:
-    void labelClick();
+    void freshen();
+
 
 public slots:
 };

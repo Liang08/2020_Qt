@@ -9,9 +9,15 @@ struct Position{
 
 class snakeData
 {
-    std::vector<Position> data;
     int direction;
 public:
+    std::vector<Position> data;
+    auto begin(){
+        return data.begin();
+    }
+    auto end(){
+        return data.end();
+    }
     snakeData();
 
 };

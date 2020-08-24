@@ -2,14 +2,19 @@
 #include "ui_mainwindow.h"
 #include "snakedata.h"
 #include <QPixmap>
+#include <QDebug>
 #include <QPainter>
+#include <QSpinBox>
+#include <QComboBox>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowTitle("贪吃蛇");
     paintBackground();
+
     but[0] = ui->startButton;
     but[1] = ui->stopButton;
     but[2] = ui->continueButton;
@@ -17,19 +22,38 @@ MainWindow::MainWindow(QWidget *parent)
     but[4] = ui->exitButton;
     but[5] = ui->saveButton;
     but[6] = ui->loadButton;
+
+    ui->spinBox->setRange(0, 39);
+    ui->spinBox_2->setRange(0, 39);
+    spi[0] = ui->spinBox;
+    spi[1] = ui->spinBox_2;
+
+
+    set_items_disabled(ui->comboBox, 0);
+    set_items_disabled(ui->comboBox, 2);
+    set_items_abled(ui->comboBox, 1);
+    set_items_abled(ui->comboBox, 3);
+
     setButtonStatus(0);
+
+    //signals and slots
     connect(but[0], SIGNAL(clicked()), this, SLOT(start()));
     connect(but[1], SIGNAL(clicked()), this, SLOT(stop()));
     connect(but[2], SIGNAL(clicked()), this, SLOT(contin()));
     connect(but[3], SIGNAL(clicked()), this, SLOT(restart()));
     connect(but[6], SIGNAL(clicked()), this, SLOT(load()));
-    connect(ui->label, SIGNAL(labelClick()), this, SLOT(obstaclePaint()));
+    connect(ui->label, SIGNAL(freshen()), this, SLOT(obstaclePaint()));
+    for(int i = 0; i < 2; i ++)
+        connect(spi[i], SIGNAL(valueChanged(int)), this, SLOT(createSnake(int)));
+    connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(createSnake(int)));
 }
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
 
 void MainWindow::setButtonStatus(int i){
     switch (i) {
@@ -40,6 +64,11 @@ void MainWindow::setButtonStatus(int i){
         but[5]->setEnabled(false);
         but[0]->setEnabled(true);
         but[6]->setEnabled(true);
+        ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+        for(int k = 0; k < 2; k ++){
+            spi[k]->setEnabled(true);
+        }
+        ui->comboBox->setEnabled(true);
         break;
     case 1 :
         but[0]->setEnabled(false);
@@ -48,6 +77,11 @@ void MainWindow::setButtonStatus(int i){
         but[3]->setEnabled(false);
         but[5]->setEnabled(false);
         but[6]->setEnabled(false);
+        ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+        for(int k = 0; k < 2; k ++){
+            spi[k]->setEnabled(false);
+        }
+        ui->comboBox->setEnabled(false);
         break;
     case 2 :
         but[0]->setEnabled(false);
@@ -56,6 +90,11 @@ void MainWindow::setButtonStatus(int i){
         but[3]->setEnabled(true);
         but[5]->setEnabled(true);
         but[6]->setEnabled(false);
+        ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+        for(int k = 0; k < 2; k ++){
+            spi[k]->setEnabled(false);
+        }
+        ui->comboBox->setEnabled(false);
         break;
     default :
         but[0]->setEnabled(false);
@@ -64,33 +103,104 @@ void MainWindow::setButtonStatus(int i){
         but[3]->setEnabled(true);
         but[5]->setEnabled(false);
         but[6]->setEnabled(false);
+        ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+        for(int k = 0; k < 2; k ++){
+            spi[k]->setEnabled(false);
+        }
+        ui->comboBox->setEnabled(false);
         break;
     }
 }
 
+
+//slots
 void MainWindow::stop(){
     setButtonStatus(2);
 }
+
 
 void MainWindow::start(){
     setButtonStatus(1);
 }
 
+
 void MainWindow::contin(){
     setButtonStatus(1);
 }
+
 
 void MainWindow::restart(){
     setButtonStatus(0);
 }
 
+
 void MainWindow::load(){
     setButtonStatus(1);
 }
 
+
 void MainWindow::obstaclePaint(){
     paintBackground();
 }
+
+
+void MainWindow::createSnake(int){
+    int x[3];
+    for (int i = 0; i < 2; i ++) {
+        x[i] = spi[i]->text().toInt();
+    }
+    if(x[1] == 0){
+        set_items_abled(ui->comboBox, 1);
+        set_items_disabled(ui->comboBox, 0);
+    }else if(x[1] == 39){
+        set_items_abled(ui->comboBox, 0);
+        set_items_disabled(ui->comboBox, 1);
+    }else{
+        set_items_abled(ui->comboBox, 1);
+        set_items_abled(ui->comboBox, 0);
+    }
+    if(x[0] == 0){
+        set_items_abled(ui->comboBox, 3);
+        set_items_disabled(ui->comboBox, 2);
+    }else if(x[0] == 39){
+        set_items_abled(ui->comboBox, 2);
+        set_items_disabled(ui->comboBox, 3);
+    }else{
+        set_items_abled(ui->comboBox, 2);
+        set_items_abled(ui->comboBox, 3);
+    }
+    ui->label->setSnake(x[0], x[1]);
+    x[2] = ui->comboBox->currentIndex();
+    switch (x[2]) {
+    case 0 :
+        ui->label->setSnakeTail(x[0], x[1]-1);
+        break;
+    case 1 :
+        ui->label->setSnakeTail(x[0], x[1]+1);
+        break;
+    case 2 :
+        ui->label->setSnakeTail(x[0]-1, x[1]);
+        break;
+    default:
+        ui->label->setSnakeTail(x[0]+1, x[1]);
+        break;
+    }
+}
+
+
+void MainWindow::set_items_disabled(QComboBox *com, int a){
+        QModelIndex index = com->model()->index(a, 0);
+        QVariant v(0);
+        com->model()->setData(index, v, Qt::UserRole - 1);
+}
+
+
+void MainWindow::set_items_abled(QComboBox *com, int a){
+        QModelIndex index = com->model()->index(a, 0);
+        QVariant v(-1);
+        com->model()->setData(index, v, Qt::UserRole - 1);
+}
+
 
 void MainWindow::paintBackground(){
     QPixmap pixmap = QPixmap(1001, 1001);
@@ -113,6 +223,16 @@ void MainWindow::paintBackground(){
             if(ui->label->ob.obs[i][j] == 1)
                 painter.drawRect(25 * i, 25 * j, 25, 25);
         }
+    }
+    brush.setColor(Qt::black);
+    brush.setStyle(Qt::SolidPattern);
+    painter.setBrush(brush);
+    painter.drawRect(25 * ui->label->snake_0.data[0].x, 25 * ui->label->snake_0.data[0].y, 25, 25);
+    brush.setColor(Qt::gray);
+    brush.setStyle(Qt::SolidPattern);
+    painter.setBrush(brush);
+    for(unsigned int i = 1; i < ui->label->snake_0.data.size(); i ++){
+        painter.drawRect(25 * ui->label->snake_0.data[i].x, 25 * ui->label->snake_0.data[i].y, 25, 25);
     }
     ui->label->setPixmap(pixmap);
 }
