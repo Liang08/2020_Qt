@@ -154,6 +154,12 @@
        </item>
        <item row="2" column="3">
         <widget class="QComboBox" name="comboBox">
+         <property name="currentText">
+          <string>下</string>
+         </property>
+         <property name="currentIndex">
+          <number>1</number>
+         </property>
          <item>
           <property name="text">
            <string>上</string>

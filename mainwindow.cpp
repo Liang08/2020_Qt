@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QSpinBox>
 #include <QComboBox>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -28,13 +29,21 @@ MainWindow::MainWindow(QWidget *parent)
     spi[0] = ui->spinBox;
     spi[1] = ui->spinBox_2;
 
+    timer = new QTimer(this);
+
+    //设置焦点
+    for(int i = 0; i < 6; i ++){
+        but[i]->setFocusPolicy(Qt::NoFocus);
+    }
+    for(int i = 0; i < 2; i ++){
+        spi[i]->setFocusPolicy(Qt::NoFocus);
+    }
+    ui->comboBox->setFocusPolicy(Qt::NoFocus);
 
     set_items_disabled(ui->comboBox, 0);
     set_items_disabled(ui->comboBox, 2);
     set_items_abled(ui->comboBox, 1);
     set_items_abled(ui->comboBox, 3);
-
-    setButtonStatus(0);
 
     //signals and slots
     connect(but[0], SIGNAL(clicked()), this, SLOT(start()));
@@ -43,9 +52,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(but[3], SIGNAL(clicked()), this, SLOT(restart()));
     connect(but[6], SIGNAL(clicked()), this, SLOT(load()));
     connect(ui->label, SIGNAL(freshen()), this, SLOT(obstaclePaint()));
+    connect(ui->label, SIGNAL(wrong()), this, SLOT(failed()));
     for(int i = 0; i < 2; i ++)
         connect(spi[i], SIGNAL(valueChanged(int)), this, SLOT(createSnake(int)));
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(createSnake(int)));
+    connect(timer, SIGNAL(timeout()), this, SLOT(timeGo()));
 }
 
 
@@ -116,21 +127,27 @@ void MainWindow::setButtonStatus(int i){
 //slots
 void MainWindow::stop(){
     setButtonStatus(2);
+    timer->stop();
 }
 
 
 void MainWindow::start(){
     setButtonStatus(1);
+    ui->label->createApple();
+    timer->start(150);
 }
 
 
 void MainWindow::contin(){
     setButtonStatus(1);
+    timer->start(150);
 }
 
 
 void MainWindow::restart(){
     setButtonStatus(0);
+    timeCount = 0;
+    ui->timeLabel->setText(QString::number(timeCount));
 }
 
 
@@ -144,6 +161,28 @@ void MainWindow::obstaclePaint(){
 }
 
 
+void MainWindow::failed(){
+    timer->stop();
+    setButtonStatus(3);
+    qDebug() << "failed";
+}
+
+
+void MainWindow::timeGo(){
+    timeCount ++;
+    ui->timeLabel->setText(QString::number(timeCount));
+    if(ui->label->getAppleNum() > 0)
+        ui->label->snakeEatApple();
+    else
+        ui->label->snakeGo();
+    if(ui->label->snake_0.data[0].x == ui->label->applePosition[0] && ui->label->snake_0.data[0].y == ui->label->applePosition[1]){
+        ui->label->setAppleNumber();
+        ui->label->createApple();
+    }
+}
+
+
+//初始化snake的位置
 void MainWindow::createSnake(int){
     int x[3];
     for (int i = 0; i < 2; i ++) {
@@ -189,6 +228,14 @@ void MainWindow::createSnake(int){
         but[0]->setEnabled(false);
     else
         but[0]->setEnabled(true);
+    if(x[1] != 0 && x[2] != 0)
+        ui->label->snake_0.setDirection(0);
+    else if(x[1] != 39 && x[2] != 1)
+        ui->label->snake_0.setDirection(1);
+    else if(x[0] != 0 && x[2] != 2)
+        ui->label->snake_0.setDirection(2);
+    else
+        ui->label->snake_0.setDirection(3);
 }
 
 
@@ -206,6 +253,7 @@ void MainWindow::set_items_abled(QComboBox *com, int a){
 }
 
 
+//绘制
 void MainWindow::paintBackground(){
     QPixmap pixmap = QPixmap(1001, 1001);
     pixmap.fill(Qt::white);
@@ -228,6 +276,10 @@ void MainWindow::paintBackground(){
                 painter.drawRect(25 * i, 25 * j, 25, 25);
         }
     }
+    brush.setColor(Qt::red);
+    brush.setStyle(Qt::Dense2Pattern);
+    painter.setBrush(brush);
+    painter.drawRect(25 * ui->label->applePosition[0], 25 * ui->label->applePosition[1], 25, 25);
     brush.setColor(Qt::black);
     brush.setStyle(Qt::SolidPattern);
     painter.setBrush(brush);
