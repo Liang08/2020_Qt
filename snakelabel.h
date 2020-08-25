@@ -38,6 +38,7 @@ private:
 
 signals:
     void freshen();
+    void freshen_0();
     void wrong();
 
 

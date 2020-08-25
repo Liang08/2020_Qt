@@ -21,7 +21,9 @@ public:
     snakeData();
     void setDirection(int i);
     int getDirection();
+    void snakeInit();
 
 };
+
 
 #endif // SNAKEDATA_H

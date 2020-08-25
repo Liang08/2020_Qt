@@ -15,3 +15,8 @@ int snakeData::getDirection(){
     return direction;
 }
 
+void snakeData::snakeInit(){
+    data.push_back(Position(0, 0));
+    data.push_back(Position(0, 1));
+    setDirection(3);
+}

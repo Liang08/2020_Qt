@@ -7,6 +7,7 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QTimer>
+#include <memory>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -14,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     this->setWindowTitle("贪吃蛇");
-    paintBackground();
+    paintWithoutApple();
 
     but[0] = ui->startButton;
     but[1] = ui->stopButton;
@@ -51,7 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(but[2], SIGNAL(clicked()), this, SLOT(contin()));
     connect(but[3], SIGNAL(clicked()), this, SLOT(restart()));
     connect(but[6], SIGNAL(clicked()), this, SLOT(load()));
-    connect(ui->label, SIGNAL(freshen()), this, SLOT(obstaclePaint()));
+    connect(ui->label, SIGNAL(freshen()), this, SLOT(PaintAllElements()));
+    connect(ui->label, SIGNAL(freshen_0()), this, SLOT(paintWithoutApple()));
     connect(ui->label, SIGNAL(wrong()), this, SLOT(failed()));
     for(int i = 0; i < 2; i ++)
         connect(spi[i], SIGNAL(valueChanged(int)), this, SLOT(createSnake(int)));
@@ -148,6 +150,10 @@ void MainWindow::restart(){
     setButtonStatus(0);
     timeCount = 0;
     ui->timeLabel->setText(QString::number(timeCount));
+    ui->label->snake_0.data.clear();
+    ui->label->snake_0.snakeInit();
+    memset(ui->label->ob.obs, 0, sizeof (ui->label->ob.obs));
+    paintWithoutApple();
 }
 
 
@@ -156,8 +162,8 @@ void MainWindow::load(){
 }
 
 
-void MainWindow::obstaclePaint(){
-    paintBackground();
+void MainWindow::PaintAllElements(){
+    paintAll();
 }
 
 
@@ -254,7 +260,7 @@ void MainWindow::set_items_abled(QComboBox *com, int a){
 
 
 //绘制
-void MainWindow::paintBackground(){
+void MainWindow::paintAll(){
     QPixmap pixmap = QPixmap(1001, 1001);
     pixmap.fill(Qt::white);
     QPainter painter(&pixmap);
@@ -293,4 +299,39 @@ void MainWindow::paintBackground(){
     ui->label->setPixmap(pixmap);
 }
 
+
+void MainWindow::paintWithoutApple(){
+    QPixmap pixmap = QPixmap(1001, 1001);
+    pixmap.fill(Qt::white);
+    QPainter painter(&pixmap);
+    QPen pen;
+    pen.setColor(Qt::black);
+    painter.setPen(pen);
+    for(int i = 0; i < 40; i ++){
+        for(int j = 0; j < 40; j ++){
+            painter.drawRect(25 * i, 25 * j, 25 * i + 25, 25 * j + 25);
+        }
+    }
+    QBrush brush;
+    brush.setColor(Qt::blue);
+    brush.setStyle(Qt::Dense1Pattern);
+    painter.setBrush(brush);
+    for(int i = 0; i < 40; i ++){
+        for(int j = 0; j < 40; j ++){
+            if(ui->label->ob.obs[i][j] == 1)
+                painter.drawRect(25 * i, 25 * j, 25, 25);
+        }
+    }
+    brush.setColor(Qt::black);
+    brush.setStyle(Qt::SolidPattern);
+    painter.setBrush(brush);
+    painter.drawRect(25 * ui->label->snake_0.data[0].x, 25 * ui->label->snake_0.data[0].y, 25, 25);
+    brush.setColor(Qt::gray);
+    brush.setStyle(Qt::SolidPattern);
+    painter.setBrush(brush);
+    for(unsigned int i = 1; i < ui->label->snake_0.data.size(); i ++){
+        painter.drawRect(25 * ui->label->snake_0.data[i].x, 25 * ui->label->snake_0.data[i].y, 25, 25);
+    }
+    ui->label->setPixmap(pixmap);
+}
 

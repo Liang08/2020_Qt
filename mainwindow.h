@@ -27,7 +27,8 @@ private slots:
     void contin();
     void restart();
     void load();
-    void obstaclePaint();
+    void PaintAllElements();
+    void paintWithoutApple();
     void createSnake(int i);
     void timeGo();
     void failed();
@@ -39,7 +40,7 @@ private:
     int timeCount = 0;
     QTimer *timer;
     void setButtonStatus(int i); //0.未开始 1.游戏 2.暂停 3.终止
-    void paintBackground();
+    void paintAll();
     void set_items_disabled(QComboBox *com, int a);
     void set_items_abled(QComboBox *com, int a);
 };
