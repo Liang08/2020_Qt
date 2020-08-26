@@ -7,6 +7,8 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QTimer>
+#include <QMessageBox>
+#include <QFileDialog>
 #include <memory>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -46,6 +48,8 @@ MainWindow::MainWindow(QWidget *parent)
     set_items_abled(ui->comboBox, 1);
     set_items_abled(ui->comboBox, 3);
 
+    setButtonStatus(0);
+
     //signals and slots
     connect(but[0], SIGNAL(clicked()), this, SLOT(start()));
     connect(but[1], SIGNAL(clicked()), this, SLOT(stop()));
@@ -78,10 +82,7 @@ void MainWindow::setButtonStatus(int i){
         but[0]->setEnabled(true);
         but[6]->setEnabled(true);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, false);
-        for(int k = 0; k < 2; k ++){
-            spi[k]->setEnabled(true);
-        }
-        ui->comboBox->setEnabled(true);
+        ui->widget_4->setEnabled(true);
         break;
     case 1 :
         but[0]->setEnabled(false);
@@ -91,10 +92,7 @@ void MainWindow::setButtonStatus(int i){
         but[5]->setEnabled(false);
         but[6]->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
-        for(int k = 0; k < 2; k ++){
-            spi[k]->setEnabled(false);
-        }
-        ui->comboBox->setEnabled(false);
+        ui->widget_4->setEnabled(false);
         break;
     case 2 :
         but[0]->setEnabled(false);
@@ -104,10 +102,7 @@ void MainWindow::setButtonStatus(int i){
         but[5]->setEnabled(true);
         but[6]->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
-        for(int k = 0; k < 2; k ++){
-            spi[k]->setEnabled(false);
-        }
-        ui->comboBox->setEnabled(false);
+        ui->widget_4->setEnabled(false);
         break;
     default :
         but[0]->setEnabled(false);
@@ -117,11 +112,7 @@ void MainWindow::setButtonStatus(int i){
         but[5]->setEnabled(false);
         but[6]->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
-        for(int k = 0; k < 2; k ++){
-            spi[k]->setEnabled(false);
-        }
-        ui->comboBox->setEnabled(false);
-        break;
+        ui->widget_4->setEnabled(false);
     }
 }
 
@@ -159,6 +150,9 @@ void MainWindow::restart(){
 
 void MainWindow::load(){
     setButtonStatus(1);
+    QString path = QFileDialog::getOpenFileName(this,
+                   tr("Open File"), ".", tr("Text Files(*.txt)"));
+
 }
 
 
@@ -170,7 +164,7 @@ void MainWindow::PaintAllElements(){
 void MainWindow::failed(){
     timer->stop();
     setButtonStatus(3);
-    qDebug() << "failed";
+    QMessageBox::about(this, "Failed", "Game Failed!");
 }
 
 
@@ -285,7 +279,7 @@ void MainWindow::paintAll(){
     brush.setColor(Qt::red);
     brush.setStyle(Qt::Dense2Pattern);
     painter.setBrush(brush);
-    painter.drawRect(25 * ui->label->applePosition[0], 25 * ui->label->applePosition[1], 25, 25);
+    painter.drawEllipse(25 * ui->label->applePosition[0], 25 * ui->label->applePosition[1], 25, 25);
     brush.setColor(Qt::black);
     brush.setStyle(Qt::SolidPattern);
     painter.setBrush(brush);

@@ -1,6 +1,7 @@
 #include "snakelabel.h"
 #include <stdlib.h>
 #include <QDebug>
+#include <QTime>
 
 SnakeLabel::SnakeLabel(QWidget *parent) : QLabel(parent)
 {
@@ -62,23 +63,21 @@ bool SnakeLabel::touchObstacle(int i){
 }
 
 void SnakeLabel::snakeGo(){
-    for(int i = snake_0.data.size() - 1; i > 0; i --){
-        snake_0.data[i] = snake_0.data[i - 1];
-    }
     switch (snake_0.getDirection()) {
     case 0 :
-        snake_0.data[0].y --;
+        snake_0.data.insert(snake_0.data.begin(), Position(snake_0.data[0].x, snake_0.data[0].y - 1));
         break;
     case 1 :
-        snake_0.data[0].y ++;
+        snake_0.data.insert(snake_0.data.begin(), Position(snake_0.data[0].x, snake_0.data[0].y + 1));
         break;
     case 2 :
-        snake_0.data[0].x --;
+        snake_0.data.insert(snake_0.data.begin(), Position(snake_0.data[0].x - 1, snake_0.data[0].y));
         break;
     default:
-        snake_0.data[0].x ++;
+        snake_0.data.insert(snake_0.data.begin(), Position(snake_0.data[0].x + 1, snake_0.data[0].y));
         break;
     }
+    snake_0.data.pop_back();
     if (!isOK())
         emit wrong();
     else
@@ -117,9 +116,11 @@ void SnakeLabel::setAppleNumber(){
 
 void SnakeLabel::createApple(){
     for (;;) {
-        srand((unsigned int)(time(0)));
-        applePosition[0] = rand() % 40;
-        applePosition[1] = rand() % 40;
+        QTime time;
+        time= QTime::currentTime();
+        qsrand(time.msec()+time.second()*1000);
+        applePosition[0] = qrand() % 40;
+        applePosition[1] = qrand() % 40;
         int flag = 0;
         for (auto a : snake_0) {
             if(applePosition[0] == a.x || applePosition[1] == a.y){
