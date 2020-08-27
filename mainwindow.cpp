@@ -55,6 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(but[1], SIGNAL(clicked()), this, SLOT(stop()));
     connect(but[2], SIGNAL(clicked()), this, SLOT(contin()));
     connect(but[3], SIGNAL(clicked()), this, SLOT(restart()));
+    connect(but[5], SIGNAL(clicked()), this, SLOT(save()));
     connect(but[6], SIGNAL(clicked()), this, SLOT(load()));
     connect(ui->label, SIGNAL(freshen()), this, SLOT(PaintAllElements()));
     connect(ui->label, SIGNAL(freshen_0()), this, SLOT(paintWithoutApple()));
@@ -148,10 +149,108 @@ void MainWindow::restart(){
 }
 
 
-void MainWindow::load(){
-    setButtonStatus(1);
-    QString path = QFileDialog::getOpenFileName(this,
+void MainWindow::save(){
+    QString path = QFileDialog::getSaveFileName(this,
                    tr("Open File"), ".", tr("Text Files(*.txt)"));
+    if(!path.isEmpty()){
+        QFile file(path);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QMessageBox::warning(this, tr("Write File"),
+                                 tr("Cannot open file:\n%1").arg(path));
+            return;
+        }
+        QTextStream out(&file);
+        out << "Snake\n";
+        out << ui->label->snake_0.getDirection() << "\n";
+        out << ui->label->snake_0.data.size() << "\n";
+        for (int i = 0; i < ui->label->snake_0.data.size(); i ++) {
+            out << ui->label->snake_0.data[i].x << "\n";
+            out << ui->label->snake_0.data[i].y << "\n";
+        }
+        out << "Obstacle\n";
+        int n = 0;
+        for (int i = 0; i < 40; i ++) {
+            for (int j = 0; j < 40; j ++) {
+                if(ui->label->ob.obs[i][j] == 1)
+                    n += 1;
+            }
+        }
+        out << n << "\n";
+        for (int i = 0; i < 40; i ++) {
+            for (int j = 0; j < 40; j ++) {
+                if(ui->label->ob.obs[i][j] == 1){
+                    out << i << "\n";
+                    out << j << "\n";
+                }
+            }
+        }
+        out << "Apple\n";
+        out << ui->label->applePosition[0] << "\n";
+        out << ui->label->applePosition[1] << "\n";
+        out << "Time\n";
+        out << getTime();
+        file.close();
+    }
+    else{
+        QMessageBox::warning(this, tr("Path"),
+                                     tr("You did not select any file."));
+    }
+
+}
+
+
+void MainWindow::load(){
+    setButtonStatus(2);
+    QString path = QFileDialog::getOpenFileName(this,
+                   tr("Load File"), ".", tr("Text Files(*.txt)"));
+    if(!path.isEmpty()){
+        QFile file(path);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+            QMessageBox::warning(this, tr("Read File"),
+                                     tr("Cannot open file:\n%1").arg(path));
+            return;
+        }
+        QTextStream in(&file);
+        QString str = in.readLine();
+        if(str == "Snake"){
+            int dir = in.readLine().toInt();
+            ui->label->snake_0.setDirection(dir);
+            int n = in.readLine().toInt();
+            for (int i = 0; i < n; i ++) {
+                int x_0 = in.readLine().toInt();
+                int y_0 = in.readLine().toInt();
+                if(i == 0 || i == 1)
+                    ui->label->snake_0.data[i] = Position(x_0, y_0);
+                else
+                    ui->label->snake_0.data.push_back(Position(x_0, y_0));
+            }
+        }
+        str = in.readLine();
+        if (str == "Obstacle"){
+            int n = in.readLine().toInt();
+            for (int i = 0; i < n; i ++) {
+                int x_0 = in.readLine().toInt();
+                int y_0 = in.readLine().toInt();
+                ui->label->ob.obs[x_0][y_0] = 1;
+            }
+        }
+        str = in.readLine();
+        if (str == "Apple"){
+            ui->label->applePosition[0] = in.readLine().toInt();
+            ui->label->applePosition[1] = in.readLine().toInt();
+        }
+        str = in.readLine();
+        if (str == "Time"){
+            int t = in.readLine().toInt();
+            setTime(t);
+        }
+        paintAll();
+        file.close();
+    }
+    else{
+        QMessageBox::warning(this, tr("Path"),
+                                    tr("You did not select any file."));
+    }
 
 }
 
@@ -327,5 +426,15 @@ void MainWindow::paintWithoutApple(){
         painter.drawRect(25 * ui->label->snake_0.data[i].x, 25 * ui->label->snake_0.data[i].y, 25, 25);
     }
     ui->label->setPixmap(pixmap);
+}
+
+
+int MainWindow::getTime(){
+    return timeCount;
+}
+
+
+void MainWindow::setTime(int time){
+    timeCount = time;
 }
 

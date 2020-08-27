@@ -20,12 +20,15 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    int getTime();
+    void setTime(int time);
 
 private slots:
     void stop();
     void start();
     void contin();
     void restart();
+    void save();
     void load();
     void PaintAllElements();
     void paintWithoutApple();
