@@ -11,7 +11,7 @@ SnakeLabel::SnakeLabel(QWidget *parent) : QLabel(parent)
 void SnakeLabel::mousePressEvent(QMouseEvent *event){
     int i = event->x() / 25;
     int j = event->y() / 25 - 2;
-    if(i < 40 && j < 40)
+    if(i < 40 && j < 40 && i >= 0 && j >= 0)
         addToObstacle(i, j);
     emit freshen_0();
 }

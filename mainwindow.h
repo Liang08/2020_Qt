@@ -35,6 +35,7 @@ private slots:
     void createSnake(int i);
     void timeGo();
     void failed();
+    void on_action_5_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -67,7 +67,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>200</height>
+           <height>193</height>
           </size>
          </property>
         </spacer>
@@ -209,7 +209,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>17</width>
-           <height>200</height>
+           <height>193</height>
           </size>
          </property>
         </spacer>
@@ -394,7 +394,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>200</height>
+           <height>193</height>
           </size>
          </property>
         </spacer>
@@ -429,6 +429,24 @@
    <addaction name="menuGame"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action"/>
+   <addaction name="action_2"/>
+   <addaction name="action_3"/>
+   <addaction name="action_4"/>
+   <addaction name="action_5"/>
+   <addaction name="action_7"/>
+   <addaction name="action_8"/>
+  </widget>
   <action name="action">
    <property name="text">
     <string>开始游戏</string>
@@ -481,8 +499,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>618</x>
-     <y>253</y>
+     <x>1288</x>
+     <y>927</y>
     </hint>
     <hint type="destinationlabel">
      <x>342</x>

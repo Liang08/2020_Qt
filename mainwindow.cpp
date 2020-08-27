@@ -57,6 +57,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(but[3], SIGNAL(clicked()), this, SLOT(restart()));
     connect(but[5], SIGNAL(clicked()), this, SLOT(save()));
     connect(but[6], SIGNAL(clicked()), this, SLOT(load()));
+    connect(ui->action, SIGNAL(triggered()), this, SLOT(start()));
+    connect(ui->action_2, SIGNAL(triggered()), this, SLOT(stop()));
+    connect(ui->action_3, SIGNAL(triggered()), this, SLOT(contin()));
+    connect(ui->action_4, SIGNAL(triggered()), this, SLOT(restart()));
+    connect(ui->action_7, SIGNAL(triggered()), this, SLOT(save()));
+    connect(ui->action_8, SIGNAL(triggered()), this, SLOT(load()));
     connect(ui->label, SIGNAL(freshen()), this, SLOT(PaintAllElements()));
     connect(ui->label, SIGNAL(freshen_0()), this, SLOT(paintWithoutApple()));
     connect(ui->label, SIGNAL(wrong()), this, SLOT(failed()));
@@ -76,42 +82,66 @@ MainWindow::~MainWindow()
 void MainWindow::setButtonStatus(int i){
     switch (i) {
     case 0 :
-        but[1]->setEnabled(false);
-        but[2]->setEnabled(false);
-        but[3]->setEnabled(false);
-        but[5]->setEnabled(false);
         but[0]->setEnabled(true);
+        ui->action->setEnabled(true);
+        but[1]->setEnabled(false);
+        ui->action_2->setEnabled(false);
+        but[2]->setEnabled(false);
+        ui->action_3->setEnabled(false);
+        but[3]->setEnabled(false);
+        ui->action_4->setEnabled(false);
+        but[5]->setEnabled(false);
+        ui->action_7->setEnabled(false);
         but[6]->setEnabled(true);
+        ui->action_8->setEnabled(true);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         ui->widget_4->setEnabled(true);
         break;
     case 1 :
         but[0]->setEnabled(false);
+        ui->action->setEnabled(false);
         but[1]->setEnabled(true);
+        ui->action_2->setEnabled(true);
         but[2]->setEnabled(false);
+        ui->action_3->setEnabled(false);
         but[3]->setEnabled(false);
+        ui->action_4->setEnabled(false);
         but[5]->setEnabled(false);
+        ui->action_7->setEnabled(false);
         but[6]->setEnabled(false);
+        ui->action_8->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         ui->widget_4->setEnabled(false);
         break;
     case 2 :
         but[0]->setEnabled(false);
+        ui->action->setEnabled(false);
         but[1]->setEnabled(false);
+        ui->action_2->setEnabled(false);
         but[2]->setEnabled(true);
+        ui->action_3->setEnabled(true);
         but[3]->setEnabled(true);
+        ui->action_4->setEnabled(true);
         but[5]->setEnabled(true);
+        ui->action_7->setEnabled(true);
         but[6]->setEnabled(false);
+        ui->action_8->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         ui->widget_4->setEnabled(false);
         break;
     default :
         but[0]->setEnabled(false);
+        ui->action->setEnabled(false);
         but[1]->setEnabled(false);
+        ui->action_2->setEnabled(false);
         but[2]->setEnabled(false);
+        ui->action_3->setEnabled(false);
         but[3]->setEnabled(true);
+        ui->action_4->setEnabled(true);
         but[5]->setEnabled(false);
+        ui->action_7->setEnabled(false);
         but[6]->setEnabled(false);
+        ui->action_8->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         ui->widget_4->setEnabled(false);
     }
@@ -438,3 +468,9 @@ void MainWindow::setTime(int time){
     timeCount = time;
 }
 
+
+
+void MainWindow::on_action_5_triggered()
+{
+    this->close();
+}
