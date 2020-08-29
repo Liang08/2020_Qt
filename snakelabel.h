@@ -13,6 +13,7 @@ public:
     explicit SnakeLabel(QWidget *parent = nullptr);
     snakeData snake_0;
     Obstacle ob;
+    int status;
     int applePosition[2];
     void addToObstacle(int i, int j);
     void addSnake(int x, int y);
@@ -40,6 +41,7 @@ signals:
     void freshen();
     void freshen_0();
     void wrong();
+    void startTime();
 
 
 public slots:

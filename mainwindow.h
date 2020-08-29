@@ -16,7 +16,6 @@ QT_END_NAMESPACE
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -30,6 +29,7 @@ private slots:
     void restart();
     void save();
     void load();
+    void timeStart();
     void PaintAllElements();
     void paintWithoutApple();
     void createSnake(int i);

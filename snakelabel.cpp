@@ -17,21 +17,24 @@ void SnakeLabel::mousePressEvent(QMouseEvent *event){
 }
 
 void SnakeLabel::keyPressEvent(QKeyEvent *ev){
-    if (ev->key() == Qt::Key_Left){
-        if (snake_0.data[0].x <= snake_0.data[1].x)
-            snake_0.setDirection(2);
-    }
-    else if (ev->key() == Qt::Key_Right){
-        if (snake_0.data[0].x >= snake_0.data[1].x)
-            snake_0.setDirection(3);
-    }
-    else if(ev->key() == Qt::Key_Up){
-        if (snake_0.data[0].y <= snake_0.data[1].y)
-            snake_0.setDirection(0);
-    }
-    else if (ev->key() == Qt::Key_Down){
-        if (snake_0.data[0].y >= snake_0.data[1].y)
-            snake_0.setDirection(1);
+    if(status == 1){
+        if (ev->key() == Qt::Key_Left){
+            if (snake_0.data[0].x <= snake_0.data[1].x)
+                snake_0.setDirection(2);
+        }
+        else if (ev->key() == Qt::Key_Right){
+            if (snake_0.data[0].x >= snake_0.data[1].x)
+                snake_0.setDirection(3);
+        }
+        else if(ev->key() == Qt::Key_Up){
+            if (snake_0.data[0].y <= snake_0.data[1].y)
+                snake_0.setDirection(0);
+        }
+        else if (ev->key() == Qt::Key_Down){
+            if (snake_0.data[0].y >= snake_0.data[1].y)
+                snake_0.setDirection(1);
+        }
+        emit startTime();
     }
 }
 

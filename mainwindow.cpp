@@ -66,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->label, SIGNAL(freshen()), this, SLOT(PaintAllElements()));
     connect(ui->label, SIGNAL(freshen_0()), this, SLOT(paintWithoutApple()));
     connect(ui->label, SIGNAL(wrong()), this, SLOT(failed()));
+    connect(ui->label, SIGNAL(startTime()), this, SLOT(timeStart()));
     for(int i = 0; i < 2; i ++)
         connect(spi[i], SIGNAL(valueChanged(int)), this, SLOT(createSnake(int)));
     connect(ui->comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(createSnake(int)));
@@ -96,6 +97,7 @@ void MainWindow::setButtonStatus(int i){
         ui->action_8->setEnabled(true);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, false);
         ui->widget_4->setEnabled(true);
+        ui->label->status = 0;
         break;
     case 1 :
         but[0]->setEnabled(false);
@@ -112,6 +114,7 @@ void MainWindow::setButtonStatus(int i){
         ui->action_8->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         ui->widget_4->setEnabled(false);
+        ui->label->status = 1;
         break;
     case 2 :
         but[0]->setEnabled(false);
@@ -128,6 +131,7 @@ void MainWindow::setButtonStatus(int i){
         ui->action_8->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         ui->widget_4->setEnabled(false);
+        ui->label->status = 2;
         break;
     default :
         but[0]->setEnabled(false);
@@ -144,6 +148,8 @@ void MainWindow::setButtonStatus(int i){
         ui->action_8->setEnabled(false);
         ui->label->setAttribute(Qt::WA_TransparentForMouseEvents, true);
         ui->widget_4->setEnabled(false);
+        ui->label->status = 3;
+        break;
     }
 }
 
@@ -158,7 +164,6 @@ void MainWindow::stop(){
 void MainWindow::start(){
     setButtonStatus(1);
     ui->label->createApple();
-    timer->start(150);
 }
 
 
@@ -240,6 +245,9 @@ void MainWindow::load(){
                                      tr("Cannot open file:\n%1").arg(path));
             return;
         }
+        ui->label->snake_0.data.clear();
+        ui->label->snake_0.snakeInit();
+        memset(ui->label->ob.obs, 0, sizeof (ui->label->ob.obs));
         QTextStream in(&file);
         QString str = in.readLine();
         if(str == "Snake"){
@@ -365,6 +373,11 @@ void MainWindow::createSnake(int){
         ui->label->snake_0.setDirection(2);
     else
         ui->label->snake_0.setDirection(3);
+}
+
+
+void MainWindow::timeStart(){
+    timer->start(150);
 }
 
 
